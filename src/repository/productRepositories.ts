@@ -1,0 +1,86 @@
+import { Types } from "mongoose";
+import Product, { IProduct } from "../database/models/product";
+import Shop from "../database/models/shop";
+
+const createProduct = async (data: any): Promise<IProduct> => {
+  return await Product.create(data);
+};
+
+const findProductByAttribute = async (key: any, value: any) => {
+  return await Product.findOne({ [key]: value });
+};
+const deleteProduct = async (id: any) => {
+  return await Product.findByIdAndDelete(id);
+};
+const updateProduct = async (id: any, data: any) => {
+  return await Product.findByIdAndUpdate(id, data, { new: true });
+};
+const userFindAllProducts = async () => {
+  return await Product.find({
+    status: "active",
+    stock: { $gt: 0 },
+  }).sort({ createdAt: -1 });
+};
+const findProductsByAttribute = async (key: any, value: any) => {
+  return await Product.find({ [key]: value })
+    .sort({ createdAt: -1 })
+};
+const findProductsGroupedBySellersAndShops = async () => {
+  return Shop.aggregate([
+    {
+      $lookup: {
+        from: "users",
+        localField: "seller",
+        foreignField: "_id",
+        as: "sellerDetails"
+      }
+    },
+    { $unwind: "$sellerDetails" },
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "shop",
+        as: "products"
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        sellerId: "$sellerDetails._id",
+        sellerName: "$sellerDetails.fullNames",
+        shopId: "$_id",
+        shopName: "$name",
+        products: {
+          $map: {
+            input: "$products",
+            as: "product",
+            in: {
+              productId: "$$product._id",
+              productName: "$$product.productName",
+              description: "$$product.description",
+              images: "$$product.images",
+              price: "$$product.price",
+              stock: "$$product.stock",
+              category: "$$product.category",
+              slug: "$$product.slug",
+              status: "$$product.status",
+              createdAt: "$$product.createdAt"
+            }
+          }
+        }
+      }
+    }
+  ]);
+};
+
+
+export default {
+  createProduct,
+  findProductByAttribute,
+  deleteProduct,
+  updateProduct,
+  userFindAllProducts,
+  findProductsByAttribute,
+  findProductsGroupedBySellersAndShops
+};

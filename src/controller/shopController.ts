@@ -1,0 +1,40 @@
+import { Response, NextFunction } from "express";
+import { ExtendedRequest } from "../types/types";
+import shopRepositories from "../repository/shopRepositories";
+
+const sellerCreateShop = async (req: ExtendedRequest, res: Response, next: NextFunction): Promise<any> => {
+    try {
+        req.body.seller = req.user._id
+        const shop = await shopRepositories.saveSellerShop(req.body);
+        return res.status(201).json({
+            status: 201,
+            message: "Shop created successfully",
+            data: { shop }
+        })
+    } catch (error: any) {
+        return res.status(500).json({
+            status: 500,
+            message: error.message
+        })
+    }
+}
+
+const viewShopDetails = async (req: ExtendedRequest, res: Response, next: NextFunction): Promise<any> => {
+    try {
+        return res.status(200).json({
+            status: 200,
+            message: "Shop details retireved successfully",
+            data: { shop: req.shop }
+        })
+    } catch (error: any) {
+        return res.status(500).json({
+            status: 500,
+            message: error.message
+        })
+    }
+}
+
+export default {
+    sellerCreateShop,
+    viewShopDetails
+}
