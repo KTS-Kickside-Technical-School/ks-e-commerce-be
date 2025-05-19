@@ -6,10 +6,16 @@ export const userLoginSchema = Joi.object({
 })
 
 export const resendTokenSchema = Joi.object({
-    email: Joi.string().email().required(),
-  });
-  
+    email: Joi.string().required(),
+});
+
 export const userResetPasswordSchema = Joi.object({
     token: Joi.string().required(),
-    newPassword: Joi.string().required()
+    password: Joi.string().required(),
+    email: Joi.string().required()
+})
+
+export const validateResetTokenSchema = Joi.object({
+    email: Joi.string().required(),
+    token: Joi.string().required()
 })

@@ -1,12 +1,15 @@
 import authRepositories from "../repository/authRepositories";
 import authHelpers from "../helpers/authHelpers";
 import { Response, Request } from "express";
-import { hashPassword, decodeToken} from "../helpers/authHelpers";
+import { hashPassword, decodeToken } from "../helpers/authHelpers";
 import userRepositories from "../repository/userRepositories";
 import { sendEmail } from "../service/emailServices";
 import { generateToken } from "../helpers/authHelpers";
 import bcrypt from 'bcrypt'
+import { ExtendedRequest } from "../types/types";
+import { iSession } from "../database/models/session";
 
+export const FRONTEND_URL = process.env.FRONTEND_URL || 'https://kickside.shop';
 
 const userLogin = async (req: any, res: Response): Promise<any> => {
     try {
@@ -82,68 +85,73 @@ const newUserAccount = async (req: any, res: Response): Promise<any> => {
 
     }
 };
-const resendResetToken = async(req: any, res: Response): Promise<any> =>{
+
+
+const userForgotPassword = async (req: ExtendedRequest, res: Response): Promise<any> => {
     try {
-        const {email} = req.body;
-        const resetToken = await generateToken(req.user._id)
-        const resetTokenExpire = new Date(Date.now() + 3600000)
-        const session = await authRepositories.saveSession({user: req.user._id, content: resetToken})
-        await sendEmail(email,"Password reset request", 'Password Reset processing', 
-            `<p>You have request to reset your password,
-             Token to reset your password (<b>${resetToken}<b> <br> expired in  ${resetTokenExpire}). This link expires in 1 hour.</p>
-            <br/>
-            Best regards,
-            <br/>
-           <b> Kickside Ecommerce Team</b>
-            </p>`
-        )
+        const user = req.user
+
+        const resetToken = await generateToken(user._id);
+        const resetTokenExpire = new Date(Date.now() + 3600000);
+
+        const session = await authRepositories.saveSession({
+            user: user._id,
+            content: resetToken,
+            expiresAt: resetTokenExpire,
+        });
+
+        const resetUrl = `${FRONTEND_URL}/reset-password?token=${resetToken}&email=${user?.email}`;
+
+        const htmlContent = `
+      <div style="font-family: Arial, sans-serif; color: #333;">
+        <h2>Password Reset Request</h2>
+        <p>Hi ${user.name || 'there'},</p>
+        <p>You have requested to reset your password.</p>
+        <p>
+          <a href="${resetUrl}" style="background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">
+            Reset Password
+          </a>
+        </p>
+        <p>This link will expire in 1 hour.</p>
+        <p>If the button above doesn't work, copy and paste the following link into your browser:</p>
+        <p><a href="${resetUrl}">${resetUrl}</a></p>
+        <br/>
+        <p>Best regards,<br/><strong>Kickside Ecommerce Team</strong></p>
+      </div>
+    `;
+        const subject = `Kickside Store – Password Reset`
+
+        await sendEmail(req.user?.email, subject, subject, htmlContent);
+
         return res.status(200).json({
             status: 200,
-            message: "Reset Token sent successfully",
-            data: {session}
-        })
+            message: "Reset token sent successfully. Please check your inbox.",
+        });
 
     } catch (error: any) {
+        console.error('Error in forgot password:', error);
         return res.status(500).json({
             status: 500,
-            message: error.message
-        })
+            message: error.message || "Internal Server Error",
+        });
     }
 };
 
 const resetPassword = async (req: any, res: Response): Promise<any> => {
     try {
-        const { token, newPassword } = req.body;
-
-        const decoded: any = decodeToken(token);
-        if (!decoded || !decoded._id) {
-            return res.status(400).json({
-                status: 400,
-                message: "Invalid or expired token"
+        const result = await checkResetTokenValidity(req.user?._id, req.body.token);
+        if (!result.valid) {
+            return res.status(401).json({
+                status: 401,
+                message: result.reason,
             });
         }
 
-        const user = await userRepositories.findUserByAttribute("_id", decoded._id);
-        if (!user) {
-            return res.status(400).json({
-                status: 400,
-                message: "Invalid token or user not found"
-            });
-        }
+        req.body.password = await hashPassword(req.body.password)
 
-        const session = await authRepositories.findSessionByUserIdAndToken(user._id, token);
-        if (!session) {
-            return res.status(400).json({
-                status: 400,
-                message: "Token expired or invalid"
-            });
-        }
+        await authRepositories.deleteSession(result.session._id);
 
-        await authRepositories.deleteSession(session._id);        
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-
-        await authRepositories.updateUserInfo(user._id, { password: hashedPassword });
+        await authRepositories.updateUserInfo(req.user._id, { password: req.body.password });
 
         return res.status(200).json({
             status: 200,
@@ -158,12 +166,68 @@ const resetPassword = async (req: any, res: Response): Promise<any> => {
     }
 };
 
+export const checkResetTokenValidity = async (userId: string, token: string) => {
+    if (!userId || !token) {
+        return {
+            valid: false,
+            reason: 'Missing user ID or token.',
+        };
+    }
 
+    const session: any = await authRepositories.findSessionByUserIdAndToken(userId, token);
+
+    if (!session) {
+        return {
+            valid: false,
+            reason: 'The token is invalid or expired.',
+        };
+    }
+
+    const isExpired = Date.now() > new Date(session?.expiresAt).getTime();
+
+    if (isExpired) {
+        return {
+            valid: false,
+            reason: 'The token is invalid or expired.',
+        };
+    }
+
+    return {
+        valid: true,
+        reason: 'The token is valid.',
+        session,
+    };
+};
+
+const isResetTokenValid = async (req: ExtendedRequest, res: Response): Promise<any> => {
+    try {
+        const result = await checkResetTokenValidity(req.user?._id, req.body.token);
+
+        if (!result.valid) {
+            return res.status(401).json({
+                status: 401,
+                message: result.reason,
+            });
+        }
+
+        return res.status(200).json({
+            status: 200,
+            message: result.reason,
+        });
+
+    } catch (error: any) {
+        return res.status(500).json({
+            status: 500,
+            message: error.message || "Internal server error",
+        });
+    }
+};
 
 export default {
     userLogin,
     userLogout,
     newUserAccount,
-    resendResetToken,
-    resetPassword
+    userForgotPassword,
+    resetPassword,
+    isResetTokenValid
 }
