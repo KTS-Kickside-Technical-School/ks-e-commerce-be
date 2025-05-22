@@ -6,7 +6,7 @@ export const createProductSchema = Joi.object({
     images: Joi.array().items(Joi.string()).required(),
     price: Joi.string().required(),
     category: Joi.string().required(),
-    size: Joi.string()
+    size: Joi.string(),
 });
 
 export const updateProductSchema = Joi.object({
