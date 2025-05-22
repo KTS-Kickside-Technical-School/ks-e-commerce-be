@@ -1,13 +1,12 @@
 import Joi from "joi";
 
 export const createProductSchema = Joi.object({
-    productName: Joi.string().required(),  
+    productName: Joi.string().required(),
     description: Joi.string().required(),
-    images: Joi.array().items(Joi.string()).required(),  
+    images: Joi.array().items(Joi.string()).required(),
     price: Joi.string().required(),
     category: Joi.string().required(),
-    size: Joi.string(),
-    stock: Joi.string().required()
+    size: Joi.string()
 });
 
 export const updateProductSchema = Joi.object({
