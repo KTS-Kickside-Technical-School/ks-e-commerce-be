@@ -7,8 +7,6 @@ export const newUserSchema = Joi.object({
     profilePicture: Joi.string().optional(),
     role: Joi.string().valid("seller", "customer"),
     bio: Joi.string().optional(),
-    phone: Joi.string().required()
-
 })
 
 
