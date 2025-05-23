@@ -6,16 +6,15 @@ export const createProductSchema = Joi.object({
     images: Joi.array().items(Joi.string()).required(),
     price: Joi.string().required(),
     category: Joi.string().required(),
-    size: Joi.string(),
 });
 
 export const updateProductSchema = Joi.object({
     productName: Joi.string(),
-    productDescription: Joi.string(),
+    description: Joi.string(),
     productImage: Joi.array().items(Joi.string()),
-    price: Joi.string(),
+    price: Joi.number(),
+    discount: Joi.number(),
     category: Joi.string(),
-    size: Joi.string(),
-    status: Joi.string()
-
+    status: Joi.string(),
+    images: Joi.array().items(Joi.string()).required(),
 })
