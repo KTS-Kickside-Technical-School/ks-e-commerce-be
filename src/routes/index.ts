@@ -7,6 +7,7 @@ import CategoryRoute from './categoryRoutes';
 import cartRouter from './cartRoutes';
 import paymentRoute from './paymentRoutes';
 import invetoryRoute from './invetoryRoutes';
+import productSuggestionRoute from './productSuggestionRoute';
 
 const indexRoute = express.Router()
 
@@ -18,5 +19,6 @@ indexRoute.use("/category", CategoryRoute);
 indexRoute.use("/cart", cartRouter);
 indexRoute.use("/payment", paymentRoute)
 indexRoute.use("/invetory", invetoryRoute)
+indexRoute.use("/suggestion", productSuggestionRoute)
 
 export default indexRoute
