@@ -11,7 +11,7 @@ export interface IAddress {
     isPrimary: boolean;
 }
 
-const addressSchema = new Schema<IAddress>({
+export const addressSchema = new Schema<IAddress>({
     _id: {
         type: String,
         default: () => uuidv4(),

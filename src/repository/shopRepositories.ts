@@ -12,8 +12,14 @@ const saveSellerShop = async (data: IShop) => {
     return await Shop.create(data);
 }
 
+const updateShopDetails = async (_id: any, data: any) => {
+    return await Shop.findByIdAndUpdate(_id, data, { new: true });
+};
+
+
 export default {
     findShopByAttribute,
     findShopBy2Attributes,
-    saveSellerShop
+    saveSellerShop,
+    updateShopDetails
 }

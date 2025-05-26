@@ -9,7 +9,7 @@ import {
 import { userAuthorization } from "../middlewares/authorization";
 import shopControllers from "../controller/shopController";
 import bodyValidation from "../middlewares/bodyValidation";
-import { newShopValidation } from "../validations/shopValidations";
+import { newShopValidation, updateShopValidation } from "../validations/shopValidations";
 import userController from "../controller/userController";
 
 const shopRoutes = express.Router()
@@ -19,5 +19,7 @@ shopRoutes.get("/seller-view-shop-details", userAuthorization(["seller"]), doesS
 
 shopRoutes.get("/admin-view-sellers", userAuthorization(["admin"]), isSellersExists, userController.viewUsers)
 shopRoutes.get("/admin-view-single-shop-by-seller/:seller", userAuthorization(["admin"]), isShopExistsBySeller, shopControllers.viewShopDetails)
+
+shopRoutes.put("/seller-update-shop", userAuthorization(["seller"]), bodyValidation(updateShopValidation), doesSellerHaveShop, shopControllers.updateShopDetails);
 
 export default shopRoutes
