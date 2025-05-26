@@ -34,7 +34,25 @@ const viewShopDetails = async (req: ExtendedRequest, res: Response, next: NextFu
     }
 }
 
+const updateShopDetails = async (req: ExtendedRequest, res: Response, next: NextFunction): Promise<any> => {
+    try {
+
+        const response = await shopRepositories.updateShopDetails(req.shop?._id, req.body);
+        return res.status(200).json({
+            status: 200,
+            message: "Shop details updated successfully",
+            data: { shop: response }
+        })
+    } catch (error: any) {
+        return res.status(500).json({
+            status: 500,
+            message: error.message
+        })
+    }
+}
+
 export default {
     sellerCreateShop,
-    viewShopDetails
+    viewShopDetails,
+    updateShopDetails
 }
