@@ -7,7 +7,7 @@ const createProduct = async (data: any): Promise<IProduct> => {
 };
 
 const findProductByAttribute = async (key: any, value: any) => {
-  return await Product.findOne({ [key]: value });
+  return await Product.findOne({ [key]: value }).populate('shop');
 };
 const deleteProduct = async (id: any) => {
   return await Product.findByIdAndDelete(id);
@@ -19,11 +19,11 @@ const userFindAllProducts = async () => {
   return await Product.find({
     status: "active",
     stock: { $gt: 0 },
-  }).sort({ createdAt: -1 });
+  }).sort({ createdAt: -1 }).populate('shop');
 };
 const findProductsByAttribute = async (key: any, value: any) => {
   return await Product.find({ [key]: value })
-    .sort({ createdAt: -1 })
+    .sort({ createdAt: -1 }).populate('shop');
 };
 const findProductsGroupedBySellersAndShops = async () => {
   return Shop.aggregate([
