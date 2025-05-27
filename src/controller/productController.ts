@@ -104,10 +104,13 @@ const updateProductData = async (req: any, res: Response): Promise<any> => {
 
 const getSingleProduct = async (req: any, res: Response): Promise<any> => {
   try {
+    const relatedProducts = await productRepositories.findProductsByAttribute(
+      "category", req.product.category);
+
     return res.status(200).json({
       status: 200,
       message: "Product Retrieved Successfully",
-      data: { product: req.product },
+      data: { product: req.product, relatedProducts },
     });
   } catch (error: any) {
     return res.status(500).json({
@@ -134,20 +137,20 @@ const getAllProducts = async (
     });
   }
 };
-const getAllProductsByAdmin = async(req: ExtendedRequest, res: Response):Promise<any> =>{
+const getAllProductsByAdmin = async (req: ExtendedRequest, res: Response): Promise<any> => {
   try {
     const productsData = await productRepositories.findProductsGroupedBySellersAndShops()
     return res.status(200).json({
       status: 200,
       message: " Product retreived successfully",
-      data: {productsData}
+      data: { productsData }
     })
   } catch (error: any) {
     return res.status(500).json({
       status: 500,
       message: error.message || "Internal Server Error"
     })
-    
+
   }
 };
 
