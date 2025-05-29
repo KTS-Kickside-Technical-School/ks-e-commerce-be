@@ -25,6 +25,13 @@ const findProductsByAttribute = async (key: any, value: any) => {
   return await Product.find({ [key]: value })
     .sort({ createdAt: -1 }).populate('shop');
 };
+
+const findCustomerProductsByAttribute = async (key: any, value: any) => {
+  return await Product.find({ [key]: value, stock: { $gt: 0 }, status: "active" })
+    .sort({ createdAt: -1 }).populate('shop');
+};
+
+
 const findProductsGroupedBySellersAndShops = async () => {
   return Shop.aggregate([
     {
@@ -82,5 +89,6 @@ export default {
   updateProduct,
   userFindAllProducts,
   findProductsByAttribute,
-  findProductsGroupedBySellersAndShops
+  findProductsGroupedBySellersAndShops,
+  findCustomerProductsByAttribute
 };

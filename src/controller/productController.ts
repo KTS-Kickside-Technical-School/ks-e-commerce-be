@@ -104,7 +104,7 @@ const updateProductData = async (req: any, res: Response): Promise<any> => {
 
 const getSingleProduct = async (req: any, res: Response): Promise<any> => {
   try {
-    const relatedProducts = await productRepositories.findProductsByAttribute(
+    const relatedProducts = await productRepositories.findCustomerProductsByAttribute(
       "category", req.product.category);
 
     return res.status(200).json({
