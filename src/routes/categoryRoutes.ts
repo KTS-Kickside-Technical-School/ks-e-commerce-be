@@ -18,7 +18,7 @@ CategoryRoute.delete(
     isCategoryExistById, categoryController.deleteCategory
  );
 CategoryRoute.get(
-    "/get-all-categories", userAuthorization(["admin"]),
+    "/get-all-categories", userAuthorization(["admin","seller"]),
     categoryController.getAllCategory
  );
  CategoryRoute.get(
