@@ -1,7 +1,4 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
-import { addressSchema, IAddress } from "./user";
-import { required } from "joi";
-import { IProduct } from "./product";
 
 export interface IShop extends Document {
     _id: mongoose.Types.ObjectId;
@@ -18,7 +15,6 @@ export interface IShop extends Document {
         state: string;
         country: string;
         postalCode: string;
-        isPrimary: boolean;
     };
     status: string;
     createdAt?: Date;

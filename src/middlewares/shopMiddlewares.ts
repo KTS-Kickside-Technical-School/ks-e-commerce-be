@@ -222,8 +222,8 @@ export const isShopsAvailable = async (
     const shops = await shopRepositories.userFindAllShops();
 
     if (!shops || shops.length === 0) {
-      return res.status(400).json({
-        status: 400,
+      return res.status(404).json({
+        status: 404,
         message: "Shop unavailable at this moment",
       });
     }

@@ -76,6 +76,7 @@ const getAllShops = async (
       data: { shops: req.shops },
     });
   } catch (error: any) {
+    console.error("Error retrieving shops:", error);
     return res.status(500).json({
       status: 500,
       message: error.message,
