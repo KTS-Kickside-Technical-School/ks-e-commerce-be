@@ -1,5 +1,7 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
 import { addressSchema, IAddress } from "./user";
+import { required } from "joi";
+import { IProduct } from "./product";
 
 export interface IShop extends Document {
     _id: mongoose.Types.ObjectId;
@@ -18,6 +20,7 @@ export interface IShop extends Document {
         postalCode: string;
         isPrimary: boolean;
     };
+    status: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -53,7 +56,13 @@ const shopSchema = new Schema<IShop>(
             type: Object,
             required: false,
             default: ''
-        }
+        },
+        status:{
+            type: String,
+            enum: ["active", "inactive"],
+            default: "active"
+
+        },
     },
     { timestamps: true }
 );
