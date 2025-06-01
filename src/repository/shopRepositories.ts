@@ -16,10 +16,31 @@ const updateShopDetails = async (_id: any, data: any) => {
     return await Shop.findByIdAndUpdate(_id, data, { new: true });
 };
 
+const userFindAllShops = async () => {
+  return await Shop.find({
+    status: "active",
+  })
+    .sort({ createdAt: -1 })
+};
+
+const userFindSingleShop = async (shopId: string) => {
+  return await Shop.findOne({
+    _id: shopId,
+    status: "Active",
+  }).populate({
+    path: "products",
+    match: {
+      status: "Active",
+      stock: { $gt: 0 },
+    },
+  });
+};
 
 export default {
     findShopByAttribute,
     findShopBy2Attributes,
     saveSellerShop,
-    updateShopDetails
+    updateShopDetails,
+    userFindAllShops,
+    userFindSingleShop
 }

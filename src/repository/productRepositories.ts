@@ -7,7 +7,7 @@ const createProduct = async (data: any): Promise<IProduct> => {
 };
 
 const findProductByAttribute = async (key: any, value: any) => {
-  return await Product.findOne({ [key]: value }).populate('shop');
+  return await Product.findOne({ [key]: value }).populate("shop");
 };
 const deleteProduct = async (id: any) => {
   return await Product.findByIdAndDelete(id);
@@ -15,16 +15,22 @@ const deleteProduct = async (id: any) => {
 const updateProduct = async (id: any, data: any) => {
   return await Product.findByIdAndUpdate(id, data, { new: true });
 };
+
 const userFindAllProducts = async () => {
   return await Product.find({
     status: "active",
     stock: { $gt: 0 },
-  }).sort({ createdAt: -1 }).populate('shop');
+  })
+    .sort({ createdAt: -1 })
+    .populate("shop");
 };
+
 const findProductsByAttribute = async (key: any, value: any) => {
   return await Product.find({ [key]: value })
-    .sort({ createdAt: -1 }).populate('shop');
+    .sort({ createdAt: -1 })
+    .populate("shop");
 };
+
 const findProductsGroupedBySellersAndShops = async () => {
   return Shop.aggregate([
     {
@@ -32,8 +38,8 @@ const findProductsGroupedBySellersAndShops = async () => {
         from: "users",
         localField: "seller",
         foreignField: "_id",
-        as: "sellerDetails"
-      }
+        as: "sellerDetails",
+      },
     },
     { $unwind: "$sellerDetails" },
     {
@@ -41,8 +47,8 @@ const findProductsGroupedBySellersAndShops = async () => {
         from: "products",
         localField: "_id",
         foreignField: "shop",
-        as: "products"
-      }
+        as: "products",
+      },
     },
     {
       $project: {
@@ -65,15 +71,26 @@ const findProductsGroupedBySellersAndShops = async () => {
               category: "$$product.category",
               slug: "$$product.slug",
               status: "$$product.status",
-              createdAt: "$$product.createdAt"
-            }
-          }
-        }
-      }
-    }
+              createdAt: "$$product.createdAt",
+            },
+          },
+        },
+      },
+    },
   ]);
 };
 
+const userFindProductsByAttribute = async (key: any, value: any) => {
+  return await Product.find({
+    [key]: value,
+    status: "active",
+    stock: { $gt: 0 },
+  })
+    .sort({
+      createdAt: -1,
+    })
+    .populate("shop");
+};
 
 export default {
   createProduct,
@@ -82,5 +99,6 @@ export default {
   updateProduct,
   userFindAllProducts,
   findProductsByAttribute,
-  findProductsGroupedBySellersAndShops
+  findProductsGroupedBySellersAndShops,
+  userFindProductsByAttribute,
 };
