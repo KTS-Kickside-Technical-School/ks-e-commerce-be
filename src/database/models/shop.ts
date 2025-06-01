@@ -21,7 +21,6 @@ export interface IShop extends Document {
         isPrimary: boolean;
     };
     status: string;
-    products: IProduct[];
     createdAt?: Date;
     updatedAt?: Date;
 }
