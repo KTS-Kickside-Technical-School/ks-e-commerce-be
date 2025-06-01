@@ -11,6 +11,7 @@ import { IProductSuggestion } from "../database/models/productSuggestion.js";
 export interface ExtendedRequest extends Request {
   user?: IUser;
   shop?: IShop;
+  shops?: IShop[];
   users?: IUser[];
   product?: IProduct;
   category?: ICategory;
