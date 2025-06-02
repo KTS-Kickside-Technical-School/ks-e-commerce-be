@@ -153,12 +153,33 @@ const getAllProductsByAdmin = async (req: ExtendedRequest, res: Response): Promi
 
   }
 };
-
+const getProductsByCategory = async (
+  req: any,
+  res: Response
+): Promise<any> =>{
+  try {
+    return res.status(200).json({
+      status: 200,
+      message: "Product Retreived Succesfully",
+      data: {
+        category: req.category,
+        products: req.products,
+      }
+    })
+  } catch (error: any) {
+    return res.status(500).json({
+      status: 500,
+      message: error.message
+    })
+    
+  }
+}
 export default {
   createProduct,
   deleteProduct,
   updateProductData,
   getSingleProduct,
   getAllProducts,
-  getAllProductsByAdmin
+  getAllProductsByAdmin,
+  getProductsByCategory
 };
