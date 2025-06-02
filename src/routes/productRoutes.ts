@@ -15,6 +15,7 @@ import {
   isProductExistBySlug,
 } from "../middlewares/productMiddlewares";
 import { doesSellerHaveAShop } from "../middlewares/shopMiddlewares";
+import { isCategoryExistById, isCategoryExistByName, isCategoryHaveProducts } from "../middlewares/categoryMiddlewares";
 
 const productRoute = express.Router();
 
@@ -66,5 +67,12 @@ productRoute.get(
   "/admin-get-products",
   userAuthorization(["admin"]),
   productController.getAllProductsByAdmin
+);
+
+productRoute.get(
+  "/get-products-by-category/:name",
+  isCategoryExistByName,
+  isCategoryHaveProducts,
+  productController.getProductsByCategory
 )
 export default productRoute;
