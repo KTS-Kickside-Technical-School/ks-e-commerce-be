@@ -70,7 +70,7 @@ productRoute.get(
 );
 
 productRoute.get(
-  "/get-productys-by-category/:name",
+  "/get-products-by-category/:name",
   isCategoryExistByName,
   isCategoryHaveProducts,
   productController.getProductsByCategory
