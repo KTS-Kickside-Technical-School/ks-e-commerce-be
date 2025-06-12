@@ -8,6 +8,7 @@ import { IInvetory } from "../database/models/invetory.js";
 import { ISingleProductOrders } from "../database/models/SingleProductOrder.js";
 import { IOrder } from "../database/models/order.js";
 import { IProductSuggestion } from "../database/models/productSuggestion.js";
+import { ILocation } from "../database/models/locations.js";
 export interface ExtendedRequest extends Request {
   user?: IUser;
   shop?: IShop;
@@ -24,6 +25,8 @@ export interface ExtendedRequest extends Request {
   invetory?: IInvetory;
   order?: IOrder;
   orders?: IOrder[];
-  productSuggestion?: IProductSuggestion 
-  productSuggestions?: IProductSuggestion[]
+  productSuggestion?: IProductSuggestion;
+  productSuggestions?: IProductSuggestion[];
+  locations?: ILocation[];
+  location?: ILocation;
 }
