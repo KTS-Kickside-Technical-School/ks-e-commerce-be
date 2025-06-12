@@ -154,7 +154,7 @@ const getAllProductsByAdmin = async (req: ExtendedRequest, res: Response): Promi
   }
 };
 const getProductsByCategory = async (
-  req: any,
+  req: ExtendedRequest,
   res: Response
 ): Promise<any> =>{
   try {
