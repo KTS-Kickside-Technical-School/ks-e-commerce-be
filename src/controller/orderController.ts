@@ -2,62 +2,71 @@ import { NextFunction, Response } from "express";
 import { ExtendedRequest } from "../types/types";
 import ordersRepositories from "../repository/ordersRepositories";
 
-const updateOrder = async (req: ExtendedRequest, res: Response): Promise<any> => {
+const saveOrder = async (req: ExtendedRequest, res: Response): Promise<any> => {
     try {
-        const updatedOrder = await ordersRepositories.updateOrder(req?.order?._id, req.body);
+        req.body.user = req.user._id
+
+        const order = await ordersRepositories.saveOrder(req.body);
         return res.status(200).json({
-            status: 200,
-            message: "Order updated successfully",
-            data: { updatedOrder }
+            status: 201,
+            message: "Order is placed successfully",
+            data: { order }
         })
     } catch (error: any) {
-        return res.status(500).json({ status: 500, message: error.message })
+        return res.status(500).json({
+            status: 500,
+            message: error.message
+        })
     }
 }
 
-const viewOrders = async (req: ExtendedRequest, res: Response): Promise<any> => {
+const getSingleOrder = async (req: ExtendedRequest, res: Response): Promise<any> => {
     try {
         return res.status(200).json({
             status: 200,
-            message: "Order retrieved successfully",
-            data: { orders: req.orders || req.singleProductOrders }
+            message: "Order details retrieved successfully!",
+            data: { order: req.order }
         })
     } catch (error: any) {
-        return res.status(500).json({ status: 500, message: error.message })
+        return res.status(500).json({
+            status: 500,
+            message: error.message
+        })
     }
 }
 
-const addSingleProductOrderProcess = async (req: ExtendedRequest, res: Response): Promise<any> => {
+const customerUpdateOrder = async (req: ExtendedRequest, res: Response): Promise<any> => {
     try {
-        const updatedOrder = await ordersRepositories.updateSingleProductOrder(req?.singleProductOrder?._id, req.body);
-
-        return res.status(200).json({
-            status: 200,
-            message: "Order updated successfully",
-            data: { updatedOrder }
-        })
+        const response = await ordersRepositories.updateOrder(req?.params?.id, req.body);
     } catch (error: any) {
-        return res.status(500).json({ status: 500, message: error.message })
+        return res.status(500).json({
+            status: 500,
+            message: error.message
+        })
     }
 }
 
-const viewSingleProductOrderDetails = async (req: ExtendedRequest, res: Response, next: NextFunction): Promise<any> => {
+const customerGetOrders = async (req: ExtendedRequest, res: Response): Promise<any> => {
     try {
+        const orders = await ordersRepositories.findOrdersByAttribute("user", req.user._id)
         return res.status(200).json({
             status: 200,
-            message: "Single product order retrieved successfully"
-            , data: {
-                order: req.singleProductOrder
+            message: "Orders retrieved successfully",
+            data: {
+                orders
             }
         })
     } catch (error: any) {
-        return res.status(500).json({ status: 500, message: error.message });
+        return res.status(500).json({
+            status: 500,
+            message: error.message
+        })
     }
 }
 
 export default {
-    updateOrder,
-    viewOrders,
-    addSingleProductOrderProcess,
-    viewSingleProductOrderDetails
+    saveOrder,
+    getSingleOrder,
+    customerUpdateOrder,
+    customerGetOrders
 }

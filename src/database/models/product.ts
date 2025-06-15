@@ -6,12 +6,13 @@ export interface IProduct extends Document {
     description: string;
     images: string[];
     shop: any;
-    price: Number;
+    price: number;
     stock?: string;
     category: string;
     slug: string;
     discount: number;
-    status: string
+    status: string;
+    shippingOptions: any;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -38,7 +39,7 @@ const productSchema = new Schema<IProduct>({
         required: true
     },
     stock: {
-        type: String,
+        type: Number,
         required: false,
         default: 0
     },
@@ -59,6 +60,15 @@ const productSchema = new Schema<IProduct>({
         type: String,
         required: false,
         default: "active"
+    },
+    shippingOptions: {
+        type: Schema.Types.Mixed,
+        required: true,
+        default: {
+            fee: 0,
+            note: "Free shipping",
+            duration: "2 days"
+        }
     }
 }, { timestamps: true });
 

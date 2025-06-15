@@ -1,14 +1,99 @@
-import Joi from "joi";
+import Joi from 'joi';
 
-export const addSingleProductOrderProcess = Joi.object({
-    _id: Joi.string().required(),
-    orderStatus: Joi.string().valid("Pending", "Paid", "Shipped", "Delivered", "Cancelled"),
-    process: Joi.string().required(), // Moved from nested object
-    date: Joi.date().required(),
-    images: Joi.array().items(Joi.string()).optional(),
-    courier: Joi.when('orderStatus', {
-        is: 'Shipped',
-        then: Joi.string().required(),
-        otherwise: Joi.string().optional()
-    })
+export const saveOrderValidations = Joi.object({
+    product: Joi.string(),
+    productName: Joi.string(),
+    productImages: Joi.array().items(Joi.string()),
+    quantity: Joi.number(),
+    originalPrice: Joi.number(),
+    finalUnitPrice: Joi.number(),
+    discount: Joi.number(),
+    finalTotalPrice: Joi.number(),
+
+    shippingOptions: Joi.object({
+        fee: Joi.number(),
+        note: Joi.string().allow('', null),
+        duration: Joi.string().allow('', null),
+    }),
+
+    shippingAddress: Joi.object({
+        street: Joi.string(),
+        city: Joi.string(),
+        region: Joi.string(),
+        postalCode: Joi.string(),
+        country: Joi.string(),
+    }),
+
+    contactInfo: Joi.object({
+        phone: Joi.string(),
+        email: Joi.string().email().allow('', null),
+    }),
+
+    paymentMethod: Joi.string()
+        .valid('momo', 'visa', 'stripe', 'cash', 'paypal')
+        ,
+
+    paymentProof: Joi.string().allow('', null),
+
+
+    paidAt: Joi.date().allow(null),
+    deliveredAt: Joi.date().allow(null),
+
+    orderTrackingHistory: Joi.array().items(
+        Joi.object({
+            status: Joi.string(),
+            note: Joi.string().allow('', null),
+            timestamp: Joi.date(),
+        })
+    ).default([]),
 });
+
+export const updateOrderValidations = Joi.object({
+    product: Joi.string(),
+    productName: Joi.string(),
+    productImages: Joi.array().items(Joi.string()),
+    quantity: Joi.number(),
+    originalPrice: Joi.number(),
+    finalUnitPrice: Joi.number(),
+    discount: Joi.number(),
+    finalTotalPrice: Joi.number(),
+
+    shippingOptions: Joi.object({
+        fee: Joi.number(),
+        note: Joi.string().allow('', null),
+        duration: Joi.string().allow('', null),
+    }),
+
+    shippingAddress: Joi.object({
+        street: Joi.string(),
+        city: Joi.string(),
+        region: Joi.string(),
+        postalCode: Joi.string(),
+        country: Joi.string(),
+    }),
+
+    contactInfo: Joi.object({
+        phone: Joi.string(),
+        email: Joi.string().email().allow('', null),
+    }),
+
+    paymentMethod: Joi.string()
+        .valid('momo', 'visa', 'stripe', 'cash', 'paypal')
+        ,
+
+    paymentProof: Joi.string().allow('', null),
+
+
+    paidAt: Joi.date().allow(null),
+    deliveredAt: Joi.date().allow(null),
+
+    orderTrackingHistory: Joi.array().items(
+        Joi.object({
+            status: Joi.string(),
+            note: Joi.string().allow('', null),
+            timestamp: Joi.date(),
+        })
+    ).default([]),
+});
+
+

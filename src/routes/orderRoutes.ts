@@ -1,20 +1,15 @@
 import express from "express"
-import { isOrderExists, isSellerOrdersExists, isSellerSingleProductOrdersExists, isSingleProductOrderExists } from "../middlewares/orderMiddleware"
+import { isCustomerTheOrderOwner, isOrderExistsById } from "../middlewares/orderMiddleware"
 import orderController from "../controller/orderController"
 import { userAuthorization } from "../middlewares/authorization"
 import bodyValidation from "../middlewares/bodyValidation"
-import { addSingleProductOrderProcess } from "../validations/ordersValidations"
 import { isShopExistsBySeller } from "../middlewares/shopMiddlewares"
+import { saveOrderValidations, updateOrderValidations } from "../validations/ordersValidations"
 
 const ordersRoutes = express.Router()
 
-ordersRoutes.put("/update-order-status", userAuthorization(["customer", "seller"]), isOrderExists, orderController.updateOrder)
-ordersRoutes.get("/seller-view-orders", userAuthorization(["seller"]), isShopExistsBySeller, isSellerSingleProductOrdersExists, orderController.viewOrders);
-
-ordersRoutes.put("/add-single-product-order-process", userAuthorization(["customer", "seller"]),
-    bodyValidation(addSingleProductOrderProcess),
-    isSingleProductOrderExists, orderController.addSingleProductOrderProcess)
-ordersRoutes.get("/view-single-product-order-details/:orderId", isSingleProductOrderExists, orderController.viewSingleProductOrderDetails
-)
-
+ordersRoutes.post("/save-order", userAuthorization(["customer"]), bodyValidation(saveOrderValidations), orderController.saveOrder);
+ordersRoutes.get("/customer-get-single-order/:id", userAuthorization(["customer"]), isOrderExistsById, isCustomerTheOrderOwner, orderController.getSingleOrder);
+ordersRoutes.put("/customer-update-order/:id", userAuthorization(["customer"]), bodyValidation(updateOrderValidations), isOrderExistsById, isCustomerTheOrderOwner, orderController.customerUpdateOrder);
+ordersRoutes.get("/customer-get-orders", userAuthorization(["customer"]), orderController.customerGetOrders)
 export default ordersRoutes
