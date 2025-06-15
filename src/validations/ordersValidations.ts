@@ -31,7 +31,7 @@ export const saveOrderValidations = Joi.object({
 
     paymentMethod: Joi.string()
         .valid('momo', 'visa', 'stripe', 'cash', 'paypal')
-        ,
+    ,
 
     paymentProof: Joi.string().allow('', null),
 
@@ -79,7 +79,7 @@ export const updateOrderValidations = Joi.object({
 
     paymentMethod: Joi.string()
         .valid('momo', 'visa', 'stripe', 'cash', 'paypal')
-        ,
+    ,
 
     paymentProof: Joi.string().allow('', null),
 
@@ -87,13 +87,12 @@ export const updateOrderValidations = Joi.object({
     paidAt: Joi.date().allow(null),
     deliveredAt: Joi.date().allow(null),
 
-    orderTrackingHistory: Joi.array().items(
-        Joi.object({
-            status: Joi.string(),
-            note: Joi.string().allow('', null),
-            timestamp: Joi.date(),
-        })
-    ).default([]),
+    orderTrackingHistory: Joi.object({
+        status: Joi.string(),
+        note: Joi.string().allow('', null),
+        timestamp: Joi.date(),
+    }).required(),
+    orderStatus: Joi.string()
 });
 
 

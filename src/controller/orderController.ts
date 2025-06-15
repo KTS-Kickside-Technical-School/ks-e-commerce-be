@@ -43,7 +43,12 @@ const getSingleOrder = async (req: ExtendedRequest, res: Response): Promise<any>
 
 const customerUpdateOrder = async (req: ExtendedRequest, res: Response): Promise<any> => {
     try {
-        const response = await ordersRepositories.updateOrder(req?.params?.id, req.body);
+        const updatedOrder = await ordersRepositories.updateOrder(req?.params?.id, req.body);
+        return res.status(200).json({
+            status: 200,
+            message: "Order updated successfully",
+            data: { updatedOrder }
+        })
     } catch (error: any) {
         return res.status(500).json({
             status: 500,

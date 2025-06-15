@@ -13,7 +13,28 @@ const findOrderById = async (id: any) => {
 }
 
 const updateOrder = async (_id: any, data: any) => {
-    return await order.findByIdAndUpdate(_id, data, { new: true })
+    if (data.orderTrackingHistory) {
+        const { orderTrackingHistory, ...updateData } = data;
+
+        // Convert to array if single object
+        const historyItems = Array.isArray(orderTrackingHistory)
+            ? orderTrackingHistory
+            : [orderTrackingHistory];  // Wrap single object in array
+
+        const update: any = {};
+
+        if (Object.keys(updateData).length > 0) {
+            update.$set = updateData;
+        }
+
+        update.$push = {
+            orderTrackingHistory: { $each: historyItems }
+        };
+
+        return await order.findByIdAndUpdate(_id, update, { new: true });
+    } else {
+        return await order.findByIdAndUpdate(_id, data, { new: true });
+    }
 }
 
 const findOrdersByAttribute = async (key: any, value: any) => {
