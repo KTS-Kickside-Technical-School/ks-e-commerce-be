@@ -27,6 +27,7 @@ const saveOrder = async (req: ExtendedRequest, res: Response): Promise<any> => {
 
 const getSingleOrder = async (req: ExtendedRequest, res: Response): Promise<any> => {
     try {
+
         return res.status(200).json({
             status: 200,
             message: "Order details retrieved successfully!",
@@ -69,9 +70,28 @@ const customerGetOrders = async (req: ExtendedRequest, res: Response): Promise<a
     }
 }
 
+const adminGetOrders = async (req: ExtendedRequest, res: Response): Promise<any> => {
+    try {
+        const orders = await ordersRepositories.findAllOrders()
+        return res.status(200).json({
+            status: 200,
+            message: "Orders retrieved successfully",
+            data: {
+                orders
+            }
+        })
+    } catch (error: any) {
+        return res.status(500).json({
+            status: 500,
+            message: error.message
+        })
+    }
+}
+
 export default {
     saveOrder,
     getSingleOrder,
     customerUpdateOrder,
-    customerGetOrders
+    customerGetOrders,
+    adminGetOrders
 }

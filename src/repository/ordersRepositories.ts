@@ -20,10 +20,15 @@ const findOrdersByAttribute = async (key: any, value: any) => {
     return await order.find({ [key]: value }).populate("user").sort({ createdAt: -1 })
 }
 
+const findAllOrders = async () => {
+    return await order.find().populate("user").sort({ createdAt: -1 })
+}
+
 export default {
     saveOrder,
     findOrderByAttribute,
     findOrderById,
     updateOrder,
-    findOrdersByAttribute
+    findOrdersByAttribute,
+    findAllOrders
 }

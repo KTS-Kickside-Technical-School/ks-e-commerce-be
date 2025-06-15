@@ -5,6 +5,7 @@ import ordersRepositories from "../repository/ordersRepositories";
 export const isOrderExistsById = async (req: ExtendedRequest, res: Response, next: NextFunction): Promise<any> => {
     try {
         const id = req.body._id || req.params.id;
+
         const order = await ordersRepositories.findOrderById(id);
 
         if (!order) {
