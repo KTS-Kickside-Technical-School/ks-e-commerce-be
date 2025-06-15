@@ -12,4 +12,5 @@ ordersRoutes.post("/save-order", userAuthorization(["customer"]), bodyValidation
 ordersRoutes.get("/customer-get-single-order/:id", userAuthorization(["customer"]), isOrderExistsById, isCustomerTheOrderOwner, orderController.getSingleOrder);
 ordersRoutes.put("/customer-update-order/:id", userAuthorization(["customer"]), bodyValidation(updateOrderValidations), isOrderExistsById, isCustomerTheOrderOwner, orderController.customerUpdateOrder);
 ordersRoutes.get("/customer-get-orders", userAuthorization(["customer"]), orderController.customerGetOrders)
+
 export default ordersRoutes

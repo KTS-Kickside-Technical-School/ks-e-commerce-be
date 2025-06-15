@@ -5,8 +5,13 @@ import ordersRepositories from "../repository/ordersRepositories";
 const saveOrder = async (req: ExtendedRequest, res: Response): Promise<any> => {
     try {
         req.body.user = req.user._id
-
+        req.body.orderTrackingHistory = [{
+            status: "Order Placed",
+            note: "Your order has been placed successfully",
+            date: new Date()
+        }]
         const order = await ordersRepositories.saveOrder(req.body);
+
         return res.status(200).json({
             status: 201,
             message: "Order is placed successfully",
