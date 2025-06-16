@@ -1,8 +1,6 @@
 import { Response, NextFunction } from "express";
 import { ExtendedRequest } from "../types/types";
 import productRepositories from "../repository/productRepositories";
-import Invetory from "../database/models/invetory";
-import { invetoryType } from "../database/models/invetory";
 
 const createProduct = async (req: ExtendedRequest, res: Response): Promise<any> => {
   try {
@@ -18,14 +16,6 @@ const createProduct = async (req: ExtendedRequest, res: Response): Promise<any> 
     req.body.shop = req.shop?._id
     const product = await productRepositories.createProduct(req.body);
 
-    await Invetory.create({
-      shop: req.shop?._id,
-      type: invetoryType.PRODUCT_ADDED,
-      product: product._id,
-      description: `Product "${product.productName}" was added to the shop`,
-      newData: product
-    })
-
     return res.status(201).json({
       status: 201, message: 'Product created successfully', product
     });
@@ -38,14 +28,6 @@ const deleteProduct = async (req: any, res: Response): Promise<any> => {
   try {
     const { id } = req.params;
     const deletedProduct = await productRepositories.deleteProduct(id);
-
-    await Invetory.create({
-      shop: deletedProduct?.shop,
-      type: invetoryType.PRODUCT_DELETED,
-      product: deletedProduct?._id,
-      description: `This Product was ${deletedProduct?.productName} deleted `,
-      oldData: deletedProduct
-    });
 
     return res.status(200).json({
       status: 200,
@@ -69,25 +51,6 @@ const updateProductData = async (req: any, res: Response): Promise<any> => {
       id,
       productData
     );
-
-    if (productData.stock !== undefined && productData.stock === 0) {
-      await Invetory.create({
-        shop: updatedProduct?.shop,
-        type: invetoryType.STOCK_OUT,
-        description: `Product "${updatedProduct?.productName}" stock reached zero`,
-        oldData: { stock: exixtingData?.stock },
-        newData: { stock: 0 },
-      });
-    }
-
-    await Invetory.create({
-      shop: updatedProduct?.shop,
-      type: invetoryType.PRODUCT_UPDATED,
-      product: updatedProduct?._id,
-      description: `Product "${updatedProduct?.productName}" was updated`,
-      oldData: exixtingData,
-      newData: updatedProduct,
-    });
 
     return res.status(200).json({
       status: 200,
@@ -156,7 +119,7 @@ const getAllProductsByAdmin = async (req: ExtendedRequest, res: Response): Promi
 const getProductsByCategory = async (
   req: ExtendedRequest,
   res: Response
-): Promise<any> =>{
+): Promise<any> => {
   try {
     return res.status(200).json({
       status: 200,
@@ -171,7 +134,7 @@ const getProductsByCategory = async (
       status: 500,
       message: error.message
     })
-    
+
   }
 }
 export default {

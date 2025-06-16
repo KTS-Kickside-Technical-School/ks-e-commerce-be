@@ -32,10 +32,8 @@ const userFindAllShops = async () => {
                   { $eq: ["$shop", "$$shopId"] },
                   { $eq: ["$status", "active"] },
                   {
-                    $gt: [
-                      { $toInt: { $trim: { input: "$stock" } } },
-                      0
-                    ]
+                    $gt: ["$stock", 0]
+
                   }
                 ]
               }

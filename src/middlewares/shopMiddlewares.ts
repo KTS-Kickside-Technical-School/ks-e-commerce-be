@@ -219,8 +219,10 @@ export const isShopsAvailable = async (
   next: NextFunction
 ): Promise<any> => {
   try {
+    console.log("AAFF")
     const shops = await shopRepositories.userFindAllShops();
 
+    
     if (!shops || shops.length === 0) {
       return res.status(404).json({
         status: 404,
