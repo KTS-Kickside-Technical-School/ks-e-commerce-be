@@ -15,7 +15,9 @@ ordersRoutes.put("/customer-update-order/:id", userAuthorization(["customer", "a
 ordersRoutes.get("/customer-get-orders", userAuthorization(["customer"]), orderController.customerGetOrders);
 
 ordersRoutes.get("/admin-get-all-orders", userAuthorization(["admin"]), orderController.adminGetOrders)
-ordersRoutes.get("/admin-get-single-order/:id", userAuthorization(["admin"]), isOrderExistsById, orderController.getSingleOrder);
-ordersRoutes.put("/admin-update-order/:id", userAuthorization(["customer", "admin"]), bodyValidation(updateOrderValidations), isOrderExistsById, orderController.customerUpdateOrder);
+ordersRoutes.get("/admin-get-single-order/:id", userAuthorization(["admin", "seller"]), isOrderExistsById, orderController.getSingleOrder);
+ordersRoutes.put("/admin-update-order/:id", userAuthorization(["customer", "admin", "seller"]), bodyValidation(updateOrderValidations), isOrderExistsById, orderController.customerUpdateOrder);
+
+ordersRoutes.get("/seller-get-shop-orders", userAuthorization(["seller"]), isShopExistsBySeller, orderController.getShopOrders);
 
 export default ordersRoutes

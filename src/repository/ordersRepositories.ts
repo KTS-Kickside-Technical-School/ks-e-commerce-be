@@ -16,10 +16,9 @@ const updateOrder = async (_id: any, data: any) => {
     if (data.orderTrackingHistory) {
         const { orderTrackingHistory, ...updateData } = data;
 
-        // Convert to array if single object
         const historyItems = Array.isArray(orderTrackingHistory)
             ? orderTrackingHistory
-            : [orderTrackingHistory];  // Wrap single object in array
+            : [orderTrackingHistory];
 
         const update: any = {};
 
@@ -45,11 +44,28 @@ const findAllOrders = async () => {
     return await order.find().populate("user").sort({ createdAt: -1 })
 }
 
+
+const findShopOrders = async (shopId: any) => {
+    return await order.find()
+        .populate({
+            path: 'product',
+            model: 'Product',
+            match: { shop: shopId },
+            populate: {
+                path: 'shop',
+                model: 'Shop',
+            }
+        })
+        .populate('user', '-password')
+        .sort({ createdAt: -1 });
+};
+
 export default {
     saveOrder,
     findOrderByAttribute,
     findOrderById,
     updateOrder,
     findOrdersByAttribute,
-    findAllOrders
+    findAllOrders,
+    findShopOrders
 }
