@@ -1,5 +1,5 @@
 import express from "express"
-import { isCustomerTheOrderOwner, isOrderExistsById } from "../middlewares/orderMiddleware"
+import { isCustomerTheOrderOwner, isOrderExistsById, isOrderExistsByTrackingCoode } from "../middlewares/orderMiddleware"
 import orderController from "../controller/orderController"
 import { userAuthorization } from "../middlewares/authorization"
 import bodyValidation from "../middlewares/bodyValidation"
@@ -19,5 +19,7 @@ ordersRoutes.get("/admin-get-single-order/:id", userAuthorization(["admin", "sel
 ordersRoutes.put("/admin-update-order/:id", userAuthorization(["customer", "admin", "seller"]), bodyValidation(updateOrderValidations), isOrderExistsById, orderController.customerUpdateOrder);
 
 ordersRoutes.get("/seller-get-shop-orders", userAuthorization(["seller"]), isShopExistsBySeller, orderController.getShopOrders);
+
+ordersRoutes.get("/customer-track-order/:trackingCode", isOrderExistsByTrackingCoode, orderController.getSingleOrder);
 
 export default ordersRoutes
