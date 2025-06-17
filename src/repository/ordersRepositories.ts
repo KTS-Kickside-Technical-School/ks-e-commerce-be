@@ -5,7 +5,7 @@ const saveOrder = async (data: IOrder) => {
 }
 
 const findOrderByAttribute = async (key: any, value: any) => {
-    return await order.findOne({ [key]: value })
+    return await order.findOne({ [key]: value }).populate("user")
 }
 
 const findOrderById = async (id: any) => {
