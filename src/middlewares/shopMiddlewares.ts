@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import shopRepositories from "../repository/shopRepositories";
 import { ExtendedRequest } from "../types/types";
 import userRepositories from "../repository/userRepositories";
-import { isValidObjectId } from "mongoose";
+import mongoose, { isValidObjectId } from "mongoose";
 import productRepositories from "../repository/productRepositories";
 
 export const isShopAlreadyExists = async (
@@ -162,30 +162,44 @@ export const doesSellerHaveAShop = async (
 };
 
 export const isShopExistById = async (
-  req: any,
+  req: ExtendedRequest,
   res: Response,
   next: NextFunction
 ): Promise<any> => {
   try {
-    const { shopId } = req.params;
-    const existingShop = await shopRepositories.findShopByAttribute(
-      "_id",
-      shopId
-    );
+
+    const shopId = req.params.shopId || req.body.shopId;
+
+    if (!shopId) {
+      return res.status(400).json({
+        status: 400,
+        message: "Shop ID is required",
+      });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(shopId)) {
+      return res.status(400).json({
+        status: 400,
+        message: "Invalid Shop ID format",
+      });
+    }
+
+    const existingShop = await shopRepositories.findShopByAttribute("_id", shopId);
 
     if (!existingShop) {
       return res.status(404).json({
         status: 404,
-        mesage: "Shop not found",
+        message: "Shop not found",
       });
     }
-    req.shop = existingShop;
 
+    req.shop = existingShop;
     next();
   } catch (error: any) {
-    return res.status(500).json({
+    console.error("Shop existence check error:", error);
+    res.status(500).json({
       status: 500,
-      message: error.message || "Internal Server Error",
+      message: "Internal Server Error",
     });
   }
 };
@@ -222,7 +236,7 @@ export const isShopsAvailable = async (
     console.log("AAFF")
     const shops = await shopRepositories.userFindAllShops();
 
-    
+
     if (!shops || shops.length === 0) {
       return res.status(404).json({
         status: 404,
@@ -257,6 +271,37 @@ export const isShopHaveProducts = async (
     return res.status(500).json({
       status: 500,
       message: error.message,
+    });
+  }
+};
+
+
+export const isShopExistByName = async (
+  req: any,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  try {
+    const { shop } = req.body;
+    console.log("Shop name:", shop);
+    const existingShop = await shopRepositories.findShopByAttribute(
+      "name",
+      shop
+    );
+
+    if (!existingShop) {
+      return res.status(404).json({
+        status: 404,
+        mesage: "Shop not found",
+      });
+    }
+    req.shop = existingShop;
+
+    next();
+  } catch (error: any) {
+    return res.status(500).json({
+      status: 500,
+      message: error.message || "Internal Server Error",
     });
   }
 };

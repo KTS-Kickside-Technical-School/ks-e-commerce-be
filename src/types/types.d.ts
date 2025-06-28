@@ -9,6 +9,7 @@ import { ISingleProductOrders } from "../database/models/SingleProductOrder.js";
 import { IOrder } from "../database/models/order.js";
 import { IProductSuggestion } from "../database/models/productSuggestion.js";
 import { ILocation } from "../database/models/locations.js";
+import { iFeaturedShops } from "../database/models/featuredShops.js";
 export interface ExtendedRequest extends Request {
   user?: IUser;
   shop?: IShop;
@@ -29,4 +30,6 @@ export interface ExtendedRequest extends Request {
   productSuggestions?: IProductSuggestion[];
   locations?: ILocation[];
   location?: ILocation;
+  featuredShop?: iFeaturedShops;
+  featuredShops?: iFeaturedShops[];
 }
