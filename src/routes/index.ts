@@ -10,6 +10,7 @@ import invetoryRoute from './invetoryRoutes';
 import productSuggestionRoute from './productSuggestionRoute';
 import locationRoutes from './locationRoutes';
 import ordersRoutes from './orderRoutes';
+import adsRouter from './adsRoutes';
 
 const indexRoute = express.Router()
 
@@ -24,5 +25,6 @@ indexRoute.use("/invetory", invetoryRoute)
 indexRoute.use("/suggestion", productSuggestionRoute)
 indexRoute.use("/location", locationRoutes);
 indexRoute.use("/order", ordersRoutes);
+indexRoute.use("/ads", adsRouter);
 
 export default indexRoute
