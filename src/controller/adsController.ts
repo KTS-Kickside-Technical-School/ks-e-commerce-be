@@ -59,8 +59,27 @@ const updateFeaturedShop = async (req: ExtendedRequest, res: Response): Promise<
         })
     }
 }
+
+const getFeaturedShopsForCustomer = async (req: ExtendedRequest, res: Response): Promise<any> => {
+    try {
+        const featuredShops = await adsRepository.getCustomerFeaturedShops();
+
+        return res.status(200).json({
+            status: 200,
+            message: "Featured shops retrieved successfully",
+            data: { featuredShops }
+        })
+    } catch (error) {
+        console.error("ERROR: Getting the featured shops for customers")
+        return res.status(500).json({
+            status: 500,
+            message: "Internal Server error"
+        })
+    }
+}
 export default {
     getFeaturedSHops,
     saveFeaturedShop,
-    updateFeaturedShop
+    updateFeaturedShop,
+    getFeaturedShopsForCustomer
 };
