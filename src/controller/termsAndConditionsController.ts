@@ -57,8 +57,6 @@ const getAllTermsAndConditions = async (req: ExtendedRequest, res: Response): Pr
 
 const viewSingleTermsAndConditions = async (req: ExtendedRequest, res: Response): Promise<any> => {
     try {
-        console.log("Fetching single terms and conditions for slug:", req.params.slug);
-        console.log(req.termAndCondition);
         return res.status(200).json({
             status: 200,
             message: "Terms and conditions fetched successfully",
@@ -120,10 +118,31 @@ const saveNewTermsAndConditionsUpdates = async (req: ExtendedRequest, res: Respo
     }
 };
 
+const getActiveTermsAndConditions = async (req: ExtendedRequest, res: Response): Promise<any> => {
+    try {
+        const terms = await termsAndConditionsRepository.findTermsAndConditionsByAttribute("isActive", true);
+
+        return res.status(200).json({
+            status: 200,
+            message: "Terms and conditions fetched successfully",
+            data: {
+                terms
+            }
+        });
+    } catch (error: any) {
+        console.error("Error fetching terms and conditions:", error);
+        return res.status(500).json({
+            status: 500,
+            message: "An unknown error occurred while fetching terms and conditions"
+        });
+    }
+}
+
 
 export default {
     saveNewTermsAndConditions,
     getAllTermsAndConditions,
     viewSingleTermsAndConditions,
-    saveNewTermsAndConditionsUpdates
+    saveNewTermsAndConditionsUpdates,
+    getActiveTermsAndConditions
 }

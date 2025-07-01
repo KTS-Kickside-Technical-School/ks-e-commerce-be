@@ -10,7 +10,9 @@ const termsAndConditionsRouter = express.Router()
 termsAndConditionsRouter.post("/new-terms", userAuthorization(["admin"]), bodyValidation(newTermsSchema), isTermsAlreadyExists, termsAndConditionsController.saveNewTermsAndConditions);
 termsAndConditionsRouter.get("/admin-view-terms", userAuthorization(["admin"]), termsAndConditionsController.getAllTermsAndConditions);
 
-termsAndConditionsRouter.get("/admin-view-single-terms/:slug", userAuthorization(["admin"]), isTermExistsBySlug, termsAndConditionsController.viewSingleTermsAndConditions);
+termsAndConditionsRouter.get("/admin-view-single-terms/:slug", isTermExistsBySlug, termsAndConditionsController.viewSingleTermsAndConditions);
 termsAndConditionsRouter.put("/admin-update-terms/:slug", userAuthorization(["admin"]), bodyValidation(newTermsSchema), isTermExistsBySlug, isTermsAlreadyExists, termsAndConditionsController.saveNewTermsAndConditionsUpdates);
+
+termsAndConditionsRouter.get("/customers-view-terms", termsAndConditionsController.getActiveTermsAndConditions);
 
 export default termsAndConditionsRouter

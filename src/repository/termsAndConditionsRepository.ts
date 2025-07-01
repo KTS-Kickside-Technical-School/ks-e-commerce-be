@@ -22,9 +22,16 @@ const findTermsByAttribute = async (key: any, value: any) => {
     })
 }
 
+const findTermsAndConditionsByAttribute = async (key: any, value: any) => {
+    return await TermsAndConditions.find({
+        [key]: value,
+    }).sort({ effectiveDate: -1 })
+}
+
 export default {
     findTermsBy2Attributes,
     saveTermsAndConditions,
     findAllTermsAndConditions,
-    findTermsByAttribute
+    findTermsByAttribute,
+    findTermsAndConditionsByAttribute
 }
