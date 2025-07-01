@@ -9,6 +9,7 @@ import {
     isShopAvailable,
     isShopExistById,
     isShopHaveProducts,
+    shopOnboardingMiddleware,
 } from "../middlewares/shopMiddlewares";
 import { userAuthorization } from "../middlewares/authorization";
 import shopControllers from "../controller/shopController";
@@ -70,5 +71,7 @@ shopRoutes.get(
     isShopHaveProducts,
     shopControllers.getSingleShop
 );
+
+shopRoutes.put("/seller-onboarding", userAuthorization(["seller"]), shopOnboardingMiddleware, shopControllers.sellerOnboarding)
 
 export default shopRoutes;

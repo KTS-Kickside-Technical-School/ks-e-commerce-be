@@ -1,14 +1,14 @@
 import Shop, { IShop } from "../database/models/shop";
 
 const findShopByAttribute = async (key: string, value: any) => {
-  return await Shop.findOne({ [key]: value });
+  return await Shop.findOne({ [key]: value }).populate("seller", "fullNames email phone addresses profile phone isUserVerified");
 }
 
 const findShopBy2Attributes = async (key1: string, value1: string, key2: string, value2: string) => {
   return await Shop.findOne({ [key1]: value1, [key2]: value2 })
 }
 
-const saveSellerShop = async (data: IShop) => {
+const saveSellerShop = async (data: any) => {
   return await Shop.create(data);
 }
 

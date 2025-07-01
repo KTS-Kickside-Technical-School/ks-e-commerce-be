@@ -16,9 +16,16 @@ export interface IShop extends Document {
         country: string;
         postalCode: string;
     };
+    payment?: {
+        mobilePayment?: string;
+        bankName?: string;
+        accountNumber?: string;
+    };
     status: string;
     createdAt?: Date;
     updatedAt?: Date;
+    isWaitingForApproval?: boolean;
+    isApproved?: boolean;
 }
 
 const shopSchema = new Schema<IShop>(
@@ -53,11 +60,33 @@ const shopSchema = new Schema<IShop>(
             required: false,
             default: ''
         },
-        status:{
+        payment: {
+            mobilePayment: {
+                type: String,
+                default: "other"
+            },
+
+            bankName: {
+                type: String,
+                default: "other"
+            },
+            accountNumber: {
+                type: String,
+                required: false,
+            }
+        },
+        status: {
             type: String,
             enum: ["active", "inactive"],
             default: "active"
-
+        },
+        isWaitingForApproval: {
+            type: Boolean,
+            default: false
+        },
+        isApproved: {
+            type: Boolean,
+            default: false
         },
     },
     { timestamps: true }

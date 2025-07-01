@@ -1,6 +1,7 @@
 import { Response, NextFunction } from "express";
 import { ExtendedRequest } from "../types/types";
 import shopRepositories from "../repository/shopRepositories";
+import userRepositories from "../repository/userRepositories";
 
 const sellerCreateShop = async (
   req: ExtendedRequest,
@@ -70,6 +71,7 @@ const getAllShops = async (
   res: Response
 ): Promise<any> => {
   try {
+
     return res.status(200).json({
       status: 200,
       message: "Shops Retrieved Successfully",
@@ -105,10 +107,36 @@ const getSingleShop = async (
   }
 };
 
+const sellerOnboarding = async (
+  req: ExtendedRequest, res: Response
+): Promise<any> => {
+  try {
+    const updatedUser = await userRepositories.updateUserInfo(req.user._id,
+      {
+        idDocument: req.body.idDocument,
+        isUserVerified: false,
+      }
+    )
+    return res.status(200).json({
+      status: 200,
+      message: "Seller Onboarded Successfully, wait for the admin confirmation",
+      data: {
+        seller: updatedUser,
+        shop: req.shop
+      },
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+
+    })
+  }
+}
+
 export default {
   sellerCreateShop,
   viewShopDetails,
   updateShopDetails,
   getAllShops,
   getSingleShop,
+  sellerOnboarding
 };

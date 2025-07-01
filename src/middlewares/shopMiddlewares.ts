@@ -81,6 +81,7 @@ export const doesSellerHaveShop = async (
   }
 };
 
+
 export const isSellersExists = async (
   req: ExtendedRequest,
   res: Response,
@@ -302,6 +303,61 @@ export const isShopExistByName = async (
     return res.status(500).json({
       status: 500,
       message: error.message || "Internal Server Error",
+    });
+  }
+};
+
+export const shopOnboardingMiddleware = async (
+  req: ExtendedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  try {
+    let shop: any = await shopRepositories.findShopByAttribute(
+      "seller",
+      req.user._id
+    );
+    if (!shop) {
+      shop = await shopRepositories.saveSellerShop({
+        name: req.body.name,
+        description: req.body.description,
+        seller: req.user._id,
+        phone: req.body.phone,
+        status: "inactive",
+        rdbDocument: req.body.rdbDocument,
+        isWaitingForApproval: true,
+        isApproved: false,
+        payment: {
+          mobilePayment: req.body.mobilePayment,
+          bankName: req.body.bankName || "other",
+          accountNumber: req.body.accountNumber || ""
+        }
+      });
+    }
+    else {
+      shop = await shopRepositories.updateShopDetails(shop._id, {
+        name: req.body.name,
+        description: req.body.description,
+        seller: req.user._id,
+        phone: req.body.phone,
+        status: "inactive",
+        rdbDocument: req.body.rdbDocument,
+        isWaitingForApproval: true,
+        isApproved: false,
+        payment: {
+          mobilePayment: req.body.mobilePayment,
+          bankName: req.body.bankName || "other",
+          accountNumber: req.body.accountNumber || ""
+        }
+      });
+    }
+
+    req.shop = shop;
+    return next();
+  } catch (error: any) {
+    return res.status(500).json({
+      status: 500,
+      message: error.message,
     });
   }
 };
