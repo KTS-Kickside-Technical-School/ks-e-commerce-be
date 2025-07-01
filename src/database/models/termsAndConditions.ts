@@ -18,7 +18,7 @@ const TermsAndConditionsSchema: Schema = new Schema({
     title: { type: String, required: true },
     content: { type: String, required: true },
     summary: { type: String },
-    slug: { type: String, unique: true },
+    slug: { type: String, required: true, unique: true },
     type: { type: String, required: true, enum: ["general", "privacy", "shipping", "refund", "return", "seller", "customer"] },
     effectiveDate: { type: Date, required: true },
     isActive: { type: Boolean, required: true, default: true },

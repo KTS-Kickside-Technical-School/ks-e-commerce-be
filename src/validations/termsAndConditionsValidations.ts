@@ -6,4 +6,5 @@ export const newTermsSchema = Joi.object({
     content: Joi.string().required(),
     summary: Joi.string().required(),
     type: Joi.string().required(),
+    isActive: Joi.boolean().optional().default(true),
 })
