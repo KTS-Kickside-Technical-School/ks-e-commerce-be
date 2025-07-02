@@ -72,9 +72,7 @@ export const sellerOnboardingSchema = Joi.object({
       'string.uri': 'ID Document must be a valid URL',
       'string.empty': 'ID Document is required',
     }),
-    addresses: Joi.string().min(3).required().messages({
-      'string.empty': 'Address is required',
-    }),
+
   }).required(),
 
   payment: Joi.object({

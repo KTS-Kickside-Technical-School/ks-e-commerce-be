@@ -26,6 +26,8 @@ export interface IShop extends Document {
     updatedAt?: Date;
     isWaitingForApproval?: boolean;
     isApproved?: boolean;
+    rdbDocument?: string;
+    rejectReason?: string;
 }
 
 const shopSchema = new Schema<IShop>(
@@ -77,7 +79,6 @@ const shopSchema = new Schema<IShop>(
         },
         status: {
             type: String,
-            enum: ["active", "inactive"],
             default: "active"
         },
         isWaitingForApproval: {
@@ -88,6 +89,15 @@ const shopSchema = new Schema<IShop>(
             type: Boolean,
             default: false
         },
+        rdbDocument: {
+            type: String,
+            required: false
+        },
+        rejectReason: {
+            type: String,
+            required: false,
+            default: "Not rejected"
+        }
     },
     { timestamps: true }
 );

@@ -361,3 +361,16 @@ export const shopOnboardingMiddleware = async (
     });
   }
 };
+
+export const adminGetAllShops = async (req: ExtendedRequest, res: Response, next: NextFunction): Promise<any> => {
+  try {
+    const shops = await shopRepositories.findAllShops();
+    req.shops = shops;
+    return next();
+  } catch (error: any) {
+    return res.status(500).json({
+      status: 500,
+      message: error.message,
+    });
+  }
+};

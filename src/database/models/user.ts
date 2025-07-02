@@ -37,6 +37,7 @@ export interface IUser extends Document {
     isDisabled?: boolean;
     isEmailVerified?: boolean;
     isUserVerified?: boolean;
+    idDocument?: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -92,6 +93,10 @@ const userSchema = new Schema<IUser>(
             type: Boolean,
             default: false,
         },
+        idDocument: {
+            type: String,
+            default: false
+        }
     },
     {
         timestamps: true,

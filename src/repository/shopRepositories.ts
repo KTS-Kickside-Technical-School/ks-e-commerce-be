@@ -60,11 +60,16 @@ const userFindSingleShop = async (shopId: string) => {
   });
 };
 
+const findAllShops = async () => {
+  return await Shop.find().sort({ createdAt: -1 }).populate("seller", "fullNames email phone addresses profile phone isUserVerified");
+}
+
 export default {
   findShopByAttribute,
   findShopBy2Attributes,
   saveSellerShop,
   updateShopDetails,
   userFindAllShops,
-  userFindSingleShop
+  userFindSingleShop,
+  findAllShops
 }

@@ -10,12 +10,14 @@ import {
     isShopExistById,
     isShopHaveProducts,
     shopOnboardingMiddleware,
+    adminGetAllShops,
 } from "../middlewares/shopMiddlewares";
 import { userAuthorization } from "../middlewares/authorization";
 import shopControllers from "../controller/shopController";
 import bodyValidation from "../middlewares/bodyValidation";
 import {
     newShopValidation,
+    sellerOnboardingSchema,
     updateShopValidation,
 } from "../validations/shopValidations";
 import userController from "../controller/userController";
@@ -72,6 +74,12 @@ shopRoutes.get(
     shopControllers.getSingleShop
 );
 
-shopRoutes.put("/seller-onboarding", userAuthorization(["seller"]), shopOnboardingMiddleware, shopControllers.sellerOnboarding)
+shopRoutes.put("/seller-onboarding", userAuthorization(["seller"]), bodyValidation(sellerOnboardingSchema), shopOnboardingMiddleware, shopControllers.sellerOnboarding)
+
+shopRoutes.put("/admin-approve-shop/:shopId", userAuthorization(["admin"]), isShopExistById, shopControllers.adminApproveShop)
+shopRoutes.put("/admin-reject-shop/:shopId", userAuthorization(["admin"]), isShopExistById, shopControllers.adminRejectShop)
+
+shopRoutes.put("/admin-disable-shop/:shopId", userAuthorization(["admin"]), isShopExistById, shopControllers.adminDisableShop)
+shopRoutes.get("/admin-view-shops-list", userAuthorization(["admin"]), adminGetAllShops, shopControllers.getAllShops);
 
 export default shopRoutes;
