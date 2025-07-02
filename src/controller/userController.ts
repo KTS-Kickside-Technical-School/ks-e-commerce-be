@@ -89,7 +89,7 @@ const viewUsers = async (req: ExtendedRequest, res: Response): Promise<any> => {
 
 const disableUserAccount = async (req: any, res: Response): Promise<any> => {
     try {
-        if (req.body.isDisabled === true) {
+        if (req.user.isDisabled === true) {
             return res.status(400).json({
                 status: 400,
                 message: "User Already Disabled"
@@ -152,6 +152,23 @@ const enableDisabledUser = async (req: any, res: Response): Promise<any> => {
     }
 };
 
+const changeRole = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const { _id, role } = req.body;
+        const updatedUser = await userRepositories.updateUserInfo(_id, { role });
+        return res.status(200).json({
+            status: 200,
+            message: "User role updated successfully",
+            data: { updatedUser }
+        });
+    } catch (error: any) {
+        return res.status(500).json({
+            status: 500,
+            message: error.message || "Internal Server Error"
+        })
+    }
+}
+
 export default {
     updateUserInfo,
     getSingleUser,
@@ -159,5 +176,6 @@ export default {
     deleteUser,
     viewUsers,
     disableUserAccount,
-    enableDisabledUser
+    enableDisabledUser,
+    changeRole
 }

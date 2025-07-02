@@ -8,6 +8,7 @@ import {
   isDataChanged,
 } from "../middlewares/userMidllewares";
 import {
+  changeRoleSchema,
   createUserSchema,
   updateUserSchema,
   userDisableSchema,
@@ -72,5 +73,7 @@ userRoute.put(
 )
 
 userRoute.put("/user-update-profile", userAuthorization(["admin", "seller", "customer"]), bodyValidation(userUpdateProfileSchema), userController.updateUserInfo);
+
+userRoute.put("/change-role", userAuthorization(["admin"]), bodyValidation(changeRoleSchema), isUserExistsById, userController.changeRole)
 
 export default userRoute;

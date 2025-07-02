@@ -67,3 +67,8 @@ export const userUpdateProfileSchema = Joi.object({
     isEmailVerified: Joi.boolean().optional(),
     isUserVerified: Joi.boolean().optional()
 }).min(1);
+
+export const changeRoleSchema = Joi.object({
+    _id: Joi.string().required(),
+    role: Joi.string().required()
+})

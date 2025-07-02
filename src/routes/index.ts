@@ -11,6 +11,7 @@ import productSuggestionRoute from './productSuggestionRoute';
 import locationRoutes from './locationRoutes';
 import ordersRoutes from './orderRoutes';
 import adsRouter from './adsRoutes';
+import termsAndConditionsRouter from './termsAndConditionsRoutes';
 
 const indexRoute = express.Router()
 
@@ -26,5 +27,6 @@ indexRoute.use("/suggestion", productSuggestionRoute)
 indexRoute.use("/location", locationRoutes);
 indexRoute.use("/order", ordersRoutes);
 indexRoute.use("/ads", adsRouter);
+indexRoute.use("/terms-and-conditions",termsAndConditionsRouter);
 
 export default indexRoute
