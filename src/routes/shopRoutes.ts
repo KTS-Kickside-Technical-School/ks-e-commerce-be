@@ -11,6 +11,7 @@ import {
     isShopHaveProducts,
     shopOnboardingMiddleware,
     adminGetAllShops,
+    isUsersExists,
 } from "../middlewares/shopMiddlewares";
 import { userAuthorization } from "../middlewares/authorization";
 import shopControllers from "../controller/shopController";
@@ -40,9 +41,9 @@ shopRoutes.get(
 );
 
 shopRoutes.get(
-    "/admin-view-sellers",
+    "/admin-view-users",
     userAuthorization(["admin"]),
-    isSellersExists,
+    isUsersExists,
     userController.viewUsers
 );
 shopRoutes.get(

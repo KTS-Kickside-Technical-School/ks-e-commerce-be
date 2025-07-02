@@ -374,3 +374,21 @@ export const adminGetAllShops = async (req: ExtendedRequest, res: Response, next
     });
   }
 };
+
+export const isUsersExists = async (
+  req: ExtendedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  try {
+    const users = await userRepositories.findAllUsers();
+
+    req.users = users;
+    return next();
+  } catch (error: any) {
+    return res.status(500).json({
+      status: 500,
+      message: error.message,
+    });
+  }
+};
