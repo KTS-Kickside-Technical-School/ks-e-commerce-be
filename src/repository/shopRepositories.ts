@@ -31,10 +31,7 @@ const userFindAllShops = async () => {
                 $and: [
                   { $eq: ["$shop", "$$shopId"] },
                   { $eq: ["$status", "active"] },
-                  {
-                    $gt: ["$stock", 0]
-
-                  }
+                  { $gt: ["$stock", 0] }
                 ]
               }
             }
@@ -42,26 +39,28 @@ const userFindAllShops = async () => {
         ],
         as: "products"
       }
-    }
+    },
+    { $match: { "products.0": { $exists: true } } }
   ]);
 };
+
 
 
 const userFindSingleShop = async (shopId: string) => {
   return await Shop.findOne({
     _id: shopId,
-    status: "Active",
+    status: "active",
   }).populate({
     path: "products",
     match: {
-      status: "Active",
+      status: "active",
       stock: { $gt: 0 },
     },
   });
 };
 
 const findAllShops = async () => {
-  return await Shop.find().sort({ createdAt: -1 }).populate("seller", "fullNames email phone addresses profile phone isUserVerified");
+  return await Shop.find().sort({ createdAt: -1 }).populate("seller", "fullNames email phone addresses profile phone isUserVerified bio isDisabled idDocument");
 }
 
 export default {

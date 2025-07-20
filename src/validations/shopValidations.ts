@@ -58,14 +58,11 @@ export const sellerOnboardingSchema = Joi.object({
       'string.empty': 'Seller full names are required',
     }),
     phone: Joi.string()
-      .pattern(/^(\+?250|0)?7[2389]\d{7}$/)
       .required()
       .messages({
-        'string.pattern.base': 'Phone must be a valid Rwandan number',
         'string.empty': 'Phone is required',
       }),
-    email: Joi.string().email().required().messages({
-      'string.email': 'Email must be valid',
+    email: Joi.string().required().messages({
       'string.empty': 'Email is required',
     }),
     idDocument: Joi.string().uri().required().messages({
@@ -76,13 +73,13 @@ export const sellerOnboardingSchema = Joi.object({
   }).required(),
 
   payment: Joi.object({
-    mobilePayment: Joi.string().min(10).max(20).required().messages({
+    mobilePayment: Joi.string().required().messages({
       'string.empty': 'Mobile payment number is required',
     }),
     bankName: Joi.string().min(2).max(100).required().messages({
       'string.empty': 'Bank name is required',
     }),
-    accountNumber: Joi.string().min(5).max(30).required().messages({
+    accountNumber: Joi.string().max(30).required().messages({
       'string.empty': 'Bank account number is required',
     }),
   }).required(),

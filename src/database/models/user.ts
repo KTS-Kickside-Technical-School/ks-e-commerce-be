@@ -95,7 +95,8 @@ const userSchema = new Schema<IUser>(
         },
         idDocument: {
             type: String,
-            default: false
+            required: true,
+            default: "No id provided",
         }
     },
     {
