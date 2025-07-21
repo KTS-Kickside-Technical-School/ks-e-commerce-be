@@ -73,8 +73,7 @@ const shopSchema = new Schema<IShop>(
                 default: "other"
             },
             accountNumber: {
-                type: String,
-                required: false,
+                type: String
             }
         },
         status: {

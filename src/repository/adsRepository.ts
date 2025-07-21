@@ -47,7 +47,6 @@ const getFeaturedShopByAttribute = async (key: string, value: any) => {
 const getCustomerFeaturedShops = async () => {
     return await FeaturedShops.aggregate([
         { $match: { status: "active" } },
-
         { $sort: { createdAt: -1 } },
 
         {
@@ -56,7 +55,6 @@ const getCustomerFeaturedShops = async () => {
                 doc: { $first: "$$ROOT" }
             }
         },
-
         { $replaceRoot: { newRoot: "$doc" } },
 
         { $limit: 5 },
@@ -69,8 +67,10 @@ const getCustomerFeaturedShops = async () => {
                 as: "shop"
             }
         },
-
         { $unwind: "$shop" },
+
+        // ✅ Filter to only active shops
+        { $match: { "shop.status": "active" } },
 
         {
             $lookup: {
@@ -80,7 +80,6 @@ const getCustomerFeaturedShops = async () => {
                 as: "shop.seller"
             }
         },
-
         { $unwind: "$shop.seller" },
 
         {
@@ -90,7 +89,13 @@ const getCustomerFeaturedShops = async () => {
                 pipeline: [
                     {
                         $match: {
-                            $expr: { $eq: ["$shop", "$$shopId"] }
+                            $expr: {
+                                $and: [
+                                    { $eq: ["$shop", "$$shopId"] },
+                                    { $eq: ["$status", "active"] },
+                                    { $gt: ["$stock", 0] }
+                                ]
+                            }
                         }
                     },
                     { $sort: { createdAt: -1 } },
@@ -134,6 +139,7 @@ const getCustomerFeaturedShops = async () => {
         }
     ]);
 };
+
 
 export default {
     getAllFeaturedShops,

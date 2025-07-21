@@ -17,13 +17,38 @@ const updateProduct = async (id: any, data: any) => {
 };
 
 const userFindAllProducts = async () => {
-  return await Product.find({
-    status: "active",
-    stock: { $gt: 0 },
-  })
-    .sort({ createdAt: -1 })
-    .populate("shop");
+  return await Product.aggregate([
+    {
+      $match: {
+        status: "active",
+        stock: { $gt: 0 },
+      },
+    },
+    {
+      $lookup: {
+        from: "shops",
+        localField: "shop",
+        foreignField: "_id",
+        as: "shop",
+      },
+    },
+    {
+      $unwind: "$shop",
+    },
+    {
+      $match: {
+        "shop.status": "active",
+      },
+    },
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+  ]);
 };
+
+
 
 const findProductsByAttribute = async (key: any, value: any) => {
   return await Product.find({ [key]: value })
