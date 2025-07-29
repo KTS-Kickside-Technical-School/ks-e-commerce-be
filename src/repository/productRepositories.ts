@@ -94,7 +94,7 @@ const findProductsGroupedBySellersAndShops = async () => {
             input: "$products",
             as: "product",
             in: {
-              productId: "$$product._id",
+              _id: "$$product._id",
               productName: "$$product.productName",
               description: "$$product.description",
               images: "$$product.images",
@@ -103,6 +103,7 @@ const findProductsGroupedBySellersAndShops = async () => {
               category: "$$product.category",
               slug: "$$product.slug",
               status: "$$product.status",
+              shippingOptions: "$$product.shippingOptions",
               createdAt: "$$product.createdAt",
             },
           },

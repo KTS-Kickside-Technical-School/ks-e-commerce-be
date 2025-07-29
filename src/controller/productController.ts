@@ -106,7 +106,7 @@ const getAllProductsByAdmin = async (req: ExtendedRequest, res: Response): Promi
     return res.status(200).json({
       status: 200,
       message: " Product retreived successfully",
-      data: { productsData }
+      data: {  productsData }
     })
   } catch (error: any) {
     return res.status(500).json({
