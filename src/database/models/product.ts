@@ -13,6 +13,7 @@ export interface IProduct extends Document {
     discount: number;
     status: string;
     shippingOptions: any;
+    keywords: string[];
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -69,6 +70,11 @@ const productSchema = new Schema<IProduct>({
             note: "Free shipping",
             duration: "2 days"
         }
+    },
+    keywords: {
+        type: [String],
+        required: true,
+        default: []
     }
 }, { timestamps: true });
 

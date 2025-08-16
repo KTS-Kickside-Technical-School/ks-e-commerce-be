@@ -68,12 +68,21 @@ const updateProductData = async (req: any, res: Response): Promise<any> => {
 const getSingleProduct = async (req: any, res: Response): Promise<any> => {
   try {
     const relatedProducts = await productRepositories.findCustomerProductsByAttribute(
-      "category", req.product.category);
+      "category",
+      req.product.category
+    );
+
+    const filteredRelatedProducts = relatedProducts.filter(
+      (product: any) => product._id.toString() !== req.product._id.toString()
+    );
 
     return res.status(200).json({
       status: 200,
       message: "Product Retrieved Successfully",
-      data: { product: req.product, relatedProducts },
+      data: {
+        product: req.product,
+        relatedProducts: filteredRelatedProducts,
+      },
     });
   } catch (error: any) {
     return res.status(500).json({
@@ -82,6 +91,7 @@ const getSingleProduct = async (req: any, res: Response): Promise<any> => {
     });
   }
 };
+
 
 const getAllProducts = async (
   req: ExtendedRequest,
