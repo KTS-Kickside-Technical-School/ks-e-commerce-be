@@ -41,13 +41,12 @@ const userFindAllProducts = async () => {
       },
     },
     {
-      $sort: {
-        createdAt: -1,
+      $sample: {
+        size: 100
       },
     },
   ]);
 };
-
 
 
 const findProductsByAttribute = async (key: any, value: any) => {
@@ -55,10 +54,37 @@ const findProductsByAttribute = async (key: any, value: any) => {
     .sort({ createdAt: -1 })
     .populate("shop");
 };
-
 const findCustomerProductsByAttribute = async (key: any, value: any) => {
-  return await Product.find({ [key]: value, stock: { $gt: 0 }, status: "active" })
-    .sort({ createdAt: -1 }).populate('shop');
+  return await Product.aggregate([
+    {
+      $match: {
+        [key]: value,
+        stock: { $gt: 0 },
+        status: "active",
+      },
+    },
+    {
+      $lookup: {
+        from: "shops",
+        localField: "shop",
+        foreignField: "_id",
+        as: "shop",
+      },
+    },
+    {
+      $unwind: "$shop",
+    },
+    {
+      $match: {
+        "shop.status": "active",
+      },
+    },
+    {
+      $sample: {
+        size: 12
+      },
+    },
+  ]);
 };
 
 
