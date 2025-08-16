@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { identity } from "lodash";
 
 export const newUserSchema = Joi.object({
     fullNames: Joi.string().optional(),
@@ -16,7 +17,8 @@ export const updateUserSchema = Joi.object({
     email: Joi.string(),
     profile: Joi.string(),
     phone: Joi.string(),
-    bio: Joi.string()
+    bio: Joi.string(),
+    idDocument: Joi.string().optional(),
 })
 
 
@@ -65,7 +67,8 @@ export const userUpdateProfileSchema = Joi.object({
     addresses: Joi.array().items(addressSchema).optional(),
     isDisabled: Joi.boolean().optional(),
     isEmailVerified: Joi.boolean().optional(),
-    isUserVerified: Joi.boolean().optional()
+    isUserVerified: Joi.boolean().optional(),
+    idDocument: Joi.string().optional(),
 }).min(1);
 
 export const changeRoleSchema = Joi.object({

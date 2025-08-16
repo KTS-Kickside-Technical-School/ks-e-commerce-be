@@ -26,7 +26,7 @@ export const updateShopValidation = Joi.object({
     "string.uri": "Image URLs must be valid",
   }),
 
-  phone: Joi.string().min(10),
+  phone: Joi.string(),
   address: Joi.object({
     street: Joi.string().max(100),
     city: Joi.string().max(50),
