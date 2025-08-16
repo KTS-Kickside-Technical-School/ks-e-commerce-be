@@ -11,7 +11,8 @@ export const createProductSchema = Joi.object({
         fee: Joi.number().required(),
         note: Joi.string().required(),
         duration: Joi.string().required()
-    })
+    }),
+    keywords: Joi.array().items(Joi.string()).required(),
 });
 
 export const updateProductSchema = Joi.object({
@@ -28,5 +29,7 @@ export const updateProductSchema = Joi.object({
         fee: Joi.number().required(),
         note: Joi.string().required(),
         duration: Joi.string().required()
-    })
+    }),
+    keywords: Joi.array().items(Joi.string()).required(),
+
 })
