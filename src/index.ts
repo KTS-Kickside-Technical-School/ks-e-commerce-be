@@ -4,6 +4,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import connect from './database/config/config';
 import indexRoute from './routes';
+import { seedUsers } from './database/seeds/users';
 
 const app = express();
 
@@ -45,6 +46,7 @@ const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
 const startServer = async () => {
     try {
         await connect();
+        await seedUsers();
         app.listen(port, host, () => {
             console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode`);
             console.log(`Listening on ${host}:${port}`);
